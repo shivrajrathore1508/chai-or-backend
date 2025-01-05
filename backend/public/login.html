@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required><br>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div id="otp-container" style="display: none;">
+            <label for="otp">Enter OTP:</label>
+            <input type="text" id="otp" required><br>
+            <button id="verify-otp">Verify OTP</button>
+        </div>
+
+        <div class="signup-link">
+            <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const token = localStorage.getItem('authToken');
+
+            // Send login request to the server
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                 },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            // If login is successful, show OTP verification
+            if (res.ok) {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('otp-container').style.display = 'block';
+                window.localStorage.setItem('userId', data.userId);  // Save userId for OTP verification
+            } else {
+                alert('Login failed: ' + data.message);
+            }
+        });
+
+        document.getElementById('verify-otp').addEventListener('click', async () => {
+    const otp = document.getElementById('otp').value;
+    const userId = window.localStorage.getItem('userId');
+
+    const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, otp }),
+        credentials: 'include' // Automatically include cookies in the request
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+        alert('OTP verified successfully!');
+        window.location.href = '/admin'; // Redirect to admin panel
+    } else {
+        alert('OTP verification failed: ' + data.message);
+    }
+});
+
+
+
+    </script>
+</body>
+</html>

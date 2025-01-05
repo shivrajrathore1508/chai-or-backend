@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .blog-card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .blog-card .content {
+            padding: 20px;
+        }
+
+        .blog-card h3 {
+            font-size: 22px;
+            color: #3498db;
+        }
+
+        .blog-card p {
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2 class="text-center">Our Blogs</h2>
+        <div class="row" id="blog-cards-container">
+            <!-- Blog cards will be dynamically injected here -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch blog data from the server
+        fetch('/api/items')
+            .then(response => response.json())
+            .then(data => {
+                const blogCardsContainer = document.getElementById('blog-cards-container');
+                blogCardsContainer.innerHTML = ''; // Clear any existing content
+
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.classList.add('col-md-4');
+                    card.innerHTML = `
+                        <div class="blog-card">
+                            <img src="https://via.placeholder.com/400x200" alt="Blog Image">
+                            <div class="content">
+                                <h3>${item.name}</h3>
+                                <p>${item.description}</p>
+                                <p><strong>Price:</strong> $${item.price}</p>
+                            </div>
+                        </div>
+                    `;
+                    blogCardsContainer.appendChild(card);
+                });
+            })
+            .catch(error => console.error('Error fetching blogs:', error));
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

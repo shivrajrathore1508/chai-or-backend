@@ -1,0 +1,7 @@
+{
+    "watch": ["server.js", "routes", "models"],  // Watch specific files/folders
+    "ext": "js,json",                            // Watch for changes in js and json files
+    "ignore": ["public/*"],                      // Ignore public folder
+    "exec": "node --inspect server.js"           // Optional: run in inspect mode
+  }
+  
